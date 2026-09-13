@@ -1,0 +1,3105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Daily Diary</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+:root{
+    --background-overlay:rgba(0,0,0,0);
+    --profile-size:90px;
+}
+
+body{
+    margin:0;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background:#f4f6f9;
+    color:#222;
+    transition:.3s;
+}
+
+body.has-custom-background{
+    background-size:cover;
+    background-position:50% 50%;
+    background-attachment:fixed;
+    background-repeat:no-repeat;
+}
+
+body.has-custom-background::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:var(--background-overlay);
+    z-index:0;
+    pointer-events:none;
+}
+
+.top-bar,
+.container,
+footer{
+    position:relative;
+    z-index:1;
+}
+
+body.dark{
+    background:#171717;
+    color:#eee;
+}
+
+body.dark.has-custom-background{
+    --background-overlay:rgba(0,0,0,.45);
+}
+
+/* =====================================================
+   INSTAGRAM-STYLE LOGIN SCREEN
+===================================================== */
+#authOverlay{
+    position:fixed;
+    inset:0;
+    background:#fafafa;
+    z-index:99999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+body.dark #authOverlay{
+    background:#0f172a;
+}
+
+.ig-login-box{
+    width:100%;
+    max-width:360px;
+    background:#ffffff;
+    border:1px solid #dbdbdb;
+    border-radius:12px;
+    padding:40px 35px 30px;
+    text-align:center;
+    box-shadow:0 8px 30px rgba(0,0,0,.08);
+}
+
+body.dark .ig-login-box{
+    background:#1e293b;
+    border-color:#334155;
+    color:#f8fafc;
+}
+
+.ig-brand-title{
+    font-size:26px;
+    font-weight:800;
+    letter-spacing:1px;
+    margin:0 0 10px;
+    background:linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.ig-subtitle{
+    font-size:13px;
+    color:#737373;
+    margin-bottom:25px;
+}
+
+body.dark .ig-subtitle{
+    color:#94a3b8;
+}
+
+.ig-input-wrap{
+    margin-bottom:12px;
+    text-align:left;
+}
+
+.ig-input-wrap label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    margin-bottom:5px;
+}
+
+.ig-input{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid #dbdbdb;
+    border-radius:8px;
+    background:#fafafa;
+    font-size:14px;
+    outline:none;
+    transition:border-color .2s;
+}
+
+body.dark .ig-input{
+    background:#0f172a;
+    border-color:#475569;
+    color:white;
+}
+
+.ig-input:focus{
+    border-color:#0095f6;
+}
+
+.ig-btn{
+    width:100%;
+    background:#0095f6;
+    color:white;
+    font-weight:700;
+    font-size:14px;
+    padding:11px;
+    border:0;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:10px;
+    transition:background-color .2s;
+}
+
+.ig-btn:hover{
+    background:#1877f2;
+}
+
+.ig-error{
+    color:#ed4956;
+    font-size:12px;
+    margin-top:14px;
+    font-weight:600;
+    min-height:16px;
+}
+
+/* APP SHELL */
+#appContent{
+    display:none;
+}
+
+.top-bar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:#111827;
+    color:white;
+    min-height:75px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px 60px;
+    box-shadow:0 3px 12px rgba(0,0,0,.2);
+}
+
+.shop-title{
+    text-align:center;
+}
+
+.shop-title h1{
+    margin:0;
+    font-size:25px;
+    min-height:28px;
+}
+
+.shop-title p{
+    margin:5px 0 0;
+    font-size:14px;
+    color:#cbd5e1;
+    min-height:16px;
+}
+
+.menu-button{
+    position:absolute;
+    left:15px;
+    top:17px;
+    border:0;
+    background:#374151;
+    color:white;
+    width:42px;
+    height:42px;
+    border-radius:8px;
+    font-size:28px;
+    cursor:pointer;
+}
+
+.menu-button:hover{
+    background:#4b5563;
+}
+
+.settings-menu{
+    display:none;
+    position:fixed;
+    top:65px;
+    left:15px;
+    width:320px;
+    max-height:calc(100vh - 80px);
+    overflow-y:auto;
+    background:white;
+    color:#222;
+    border-radius:12px;
+    box-shadow:0 10px 35px rgba(0,0,0,.25);
+    z-index:2000;
+    overflow-x:hidden;
+}
+
+.settings-menu.show{
+    display:block;
+}
+
+.menu-header{
+    padding:16px;
+    background:#111827;
+    color:white;
+}
+
+.menu-item{
+    padding:14px 16px;
+    cursor:pointer;
+    border-bottom:1px solid #eee;
+}
+
+.menu-item:hover{
+    background:#f1f5f9;
+}
+
+.theme-section{
+    padding:12px 15px;
+    border-bottom:1px solid #eee;
+}
+
+.theme-title{
+    font-weight:bold;
+    margin-bottom:9px;
+}
+
+.theme-buttons{
+    display:flex;
+    gap:8px;
+}
+
+.theme-buttons button{
+    border:0;
+    padding:9px 14px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-light-theme{
+    background:#e5e7eb;
+    color:#222;
+}
+
+.btn-dark-theme{
+    background:#111827;
+    color:white;
+}
+
+.theme-control{
+    margin-top:14px;
+}
+
+.theme-control label{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:7px;
+}
+
+.theme-control input[type="range"]{
+    width:100%;
+    cursor:pointer;
+}
+
+.theme-small-text{
+    margin-top:5px;
+    font-size:11px;
+    color:#64748b;
+}
+
+.container{
+    max-width:1250px;
+    margin:auto;
+    padding:20px;
+}
+
+/* PROFILE */
+.profile-card{
+    background:white;
+    border-radius:14px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+body.dark .profile-card,
+body.dark .card,
+body.dark .modal-box{
+    background:#242424;
+    color:#eee;
+}
+
+.profile-photo{
+    width:var(--profile-size);
+    height:var(--profile-size);
+    min-width:var(--profile-size);
+    object-fit:cover;
+    object-position:50% 50%;
+    border-radius:50%;
+    border:3px solid #2563eb;
+    background:#e5e7eb;
+    transition:.2s;
+    transform-origin:center center;
+}
+
+.profile-info h2{
+    margin:0 0 5px;
+}
+
+.profile-info p{
+    margin:4px 0;
+    color:#64748b;
+}
+
+body.dark .profile-info p{
+    color:#bbb;
+}
+
+.card{
+    background:white;
+    border-radius:14px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.card h2{
+    margin-top:0;
+    font-size:20px;
+}
+
+.date-controls{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+input,
+select{
+    padding:10px 12px;
+    border:1px solid #cbd5e1;
+    border-radius:7px;
+    font-size:14px;
+    background:white;
+    color:#222;
+}
+
+body.dark input,
+body.dark select{
+    background:#333;
+    color:white;
+    border-color:#555;
+}
+
+button{
+    cursor:pointer;
+}
+
+.btn{
+    border:0;
+    padding:10px 15px;
+    border-radius:7px;
+    font-weight:bold;
+}
+
+.btn-blue-main{
+    background:#2563eb;
+    color:white;
+}
+
+.btn-green-main{
+    background:#16a34a;
+    color:white;
+}
+
+.btn-red{
+    background:#dc2626;
+    color:white;
+}
+
+.btn-light{
+    background:#e5e7eb;
+    color:#222;
+}
+
+.btn-orange-main{
+    background:#f97316;
+    color:white;
+}
+
+.btn-purple{
+    background:#7c3aed;
+    color:white;
+}
+
+.entry-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr 1fr;
+    gap:12px;
+    align-items:end;
+}
+
+.field label{
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+.payment-fields{
+    margin-top:12px;
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.hidden{
+    display:none!important;
+}
+
+.daily-summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-top:18px;
+}
+
+.summary-box{
+    padding:18px;
+    border-radius:10px;
+    text-align:center;
+}
+
+.summary-box span{
+    display:block;
+    font-size:13px;
+    color:#64748b;
+    margin-bottom:5px;
+}
+
+.summary-box strong{
+    font-size:22px;
+}
+
+.online-box{
+    background:#e0f2fe;
+}
+
+.offline-box{
+    background:#fef3c7;
+}
+
+.total-box{
+    background:#dcfce7;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+th,
+td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:left;
+    vertical-align:middle;
+}
+
+th{
+    background:#111827;
+    color:white;
+}
+
+body.dark td{
+    border-color:#555;
+}
+
+.action-buttons{
+    display:flex;
+    gap:5px;
+    flex-wrap:wrap;
+}
+
+.small-btn{
+    border:0;
+    padding:6px 9px;
+    border-radius:5px;
+    color:white;
+    font-size:12px;
+}
+
+.edit-btn{
+    background:#2563eb;
+}
+
+.delete-btn{
+    background:#dc2626;
+}
+
+.recover-btn{
+    background:#16a34a;
+}
+
+.permanent-delete-btn{
+    background:#dc2626;
+}
+
+.section-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.history-controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.month-row{
+    margin-bottom:25px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.month-header{
+    background:#1e293b;
+    color:white;
+    padding:12px 15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.month-total{
+    font-weight:bold;
+}
+
+.date-header{
+    background:#e2e8f0;
+    padding:10px 14px;
+    font-weight:bold;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+body.dark .date-header{
+    background:#333;
+}
+
+.date-total{
+    font-weight:bold;
+}
+
+.history-table{
+    margin:0;
+}
+
+.history-table th{
+    background:#475569;
+}
+
+.month-summary-line{
+    padding:12px 15px;
+    background:#f8fafc;
+    font-weight:bold;
+}
+
+body.dark .month-summary-line{
+    background:#303030;
+}
+
+.year-block{
+    margin-bottom:20px;
+}
+
+.year-title{
+    background:#111827;
+    color:white;
+    padding:15px;
+    border-radius:10px 10px 0 0;
+    font-size:22px;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.year-total{
+    font-size:16px;
+}
+
+.no-data{
+    text-align:center;
+    padding:25px;
+    color:#64748b;
+}
+
+/* CUSTOMER HISTORY */
+.customer-search-box{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.customer-search-box input{
+    flex:1;
+    min-width:250px;
+}
+
+.customer-result-header{
+    margin-top:20px;
+    padding:15px;
+    background:#eff6ff;
+    border-radius:10px;
+    border-left:5px solid #2563eb;
+}
+
+body.dark .customer-result-header{
+    background:#303b50;
+}
+
+.customer-total-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:15px;
+}
+
+.customer-total-box{
+    padding:15px;
+    border-radius:10px;
+    background:#f1f5f9;
+    text-align:center;
+}
+
+body.dark .customer-total-box{
+    background:#333;
+}
+
+.customer-total-box strong{
+    display:block;
+    font-size:20px;
+    margin-top:5px;
+}
+
+.financial-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.financial-box{
+    padding:20px;
+    border-radius:12px;
+    background:#f1f5f9;
+    text-align:center;
+}
+
+body.dark .financial-box{
+    background:#303030;
+}
+
+.financial-box h3{
+    margin:0 0 8px;
+}
+
+.financial-box strong{
+    font-size:25px;
+}
+
+footer{
+    text-align:center;
+    padding:25px;
+    color:#64748b;
+}
+
+/* MODALS */
+.settings-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    z-index:3000;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.settings-modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:100%;
+    max-width:550px;
+    max-height:90vh;
+    overflow-y:auto;
+    background:white;
+    padding:25px;
+    border-radius:14px;
+    box-shadow:0 15px 50px rgba(0,0,0,.3);
+}
+
+.modal-box h2{
+    margin-top:0;
+}
+
+.modal-box input[type="text"],
+.modal-box input[type="password"]{
+    width:100%;
+    margin:10px 0;
+}
+
+.modal-buttons{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:18px;
+    flex-wrap:wrap;
+}
+
+/* PROFILE PREVIEW */
+.profile-preview-wrap{
+    width:180px;
+    height:180px;
+    margin:15px auto;
+    border-radius:50%;
+    overflow:hidden;
+    border:3px solid #2563eb;
+    background:#e5e7eb;
+}
+
+.profile-preview-wrap img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:50% 50%;
+    display:block;
+    transform-origin:center center;
+}
+
+/* PROFILE SIZE */
+.profile-size-box{
+    margin-top:18px;
+    padding:15px;
+    background:#f1f5f9;
+    border-radius:10px;
+}
+
+body.dark .profile-size-box{
+    background:#303030;
+}
+
+.profile-size-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+    font-weight:bold;
+}
+
+#profileSize{
+    width:100%;
+    cursor:pointer;
+}
+
+/* PROFILE POSITION */
+.profile-position-box{
+    margin-top:18px;
+    padding:15px;
+    background:#f1f5f9;
+    border-radius:10px;
+}
+
+body.dark .profile-position-box{
+    background:#303030;
+}
+
+.profile-position-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+.profile-position-box input[type="range"]{
+    width:100%;
+    cursor:pointer;
+    margin-bottom:12px;
+}
+
+/* BACKGROUND DENSITY */
+.background-density-box{
+    margin-top:18px;
+    padding:15px;
+    background:#f1f5f9;
+    border-radius:10px;
+}
+
+body.dark .background-density-box{
+    background:#303030;
+}
+
+.background-density-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+    font-weight:bold;
+}
+
+#backgroundDensity{
+    width:100%;
+    cursor:pointer;
+}
+
+.density-description{
+    font-size:12px;
+    color:#64748b;
+    margin-top:7px;
+}
+
+body.dark .density-description{
+    color:#bbb;
+}
+
+.density-value{
+    color:#2563eb;
+}
+
+/* BACKGROUND POSITION */
+.background-position-box{
+    margin-top:18px;
+    padding:15px;
+    background:#f1f5f9;
+    border-radius:10px;
+}
+
+body.dark .background-position-box{
+    background:#303030;
+}
+
+.background-position-box input[type="range"]{
+    width:100%;
+    cursor:pointer;
+    margin-bottom:12px;
+}
+
+.background-position-label{
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    margin-bottom:5px;
+}
+
+.background-preview-wrap{
+    width:100%;
+    height:220px;
+    margin-top:15px;
+    border-radius:10px;
+    overflow:hidden;
+    background-size:cover;
+    background-position:50% 50%;
+    background-repeat:no-repeat;
+    background-color:#e5e7eb;
+    display:none;
+}
+
+/* DELETED HISTORY */
+.deleted-history-summary{
+    padding:15px;
+    background:#fff7ed;
+    border-left:5px solid #f97316;
+    border-radius:8px;
+    margin-bottom:15px;
+}
+
+body.dark .deleted-history-summary{
+    background:#3b2f24;
+}
+
+.deleted-entry-card{
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:10px;
+    background:#fafafa;
+}
+
+body.dark .deleted-entry-card{
+    background:#303030;
+    border-color:#555;
+}
+
+.deleted-entry-top{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.deleted-entry-actions{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    margin-top:12px;
+}
+
+.deleted-entry-info{
+    margin-top:8px;
+    line-height:1.6;
+}
+
+/* CONFIRM */
+.confirm-warning{
+    padding:15px;
+    background:#fef2f2;
+    border-left:5px solid #dc2626;
+    border-radius:8px;
+    margin:15px 0;
+}
+
+body.dark .confirm-warning{
+    background:#3a2424;
+}
+
+@media(max-width:850px){
+    .entry-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .daily-summary,
+    .financial-grid,
+    .customer-total-grid{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:600px){
+    .top-bar{
+        padding:10px 50px;
+    }
+
+    .shop-title h1{
+        font-size:18px;
+    }
+
+    .entry-grid{
+        grid-template-columns:1fr;
+    }
+
+    .daily-summary,
+    .financial-grid,
+    .customer-total-grid{
+        grid-template-columns:1fr;
+    }
+
+    .profile-card{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .table-wrap{
+        overflow-x:auto;
+    }
+
+    .settings-menu{
+        width:calc(100vw - 30px);
+    }
+}
+
+@media print{
+    .no-print,
+    .settings-menu,
+    button,
+    input,
+    select,
+    .action-buttons,
+    #authOverlay{
+        display:none!important;
+    }
+
+    body{
+        background:white!important;
+    }
+
+    .top-bar{
+        position:static;
+    }
+
+    .card{
+        box-shadow:none;
+        border:1px solid #ddd;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     INSTAGRAM LOGIN / SET PASSWORD OVERLAY
+===================================================== -->
+<div id="authOverlay">
+    <div class="ig-login-box">
+        <h2 class="ig-brand-title" id="authBrandTitle">Daily Diary</h2>
+        <div class="ig-subtitle" id="authSubtitle">Enter your password to access account</div>
+
+        <form onsubmit="handleAuthSubmit(event)">
+            <div class="ig-input-wrap" id="registerWrap" style="display:none;">
+                <label for="regPassword">Set New Password</label>
+                <input type="password" id="regPassword" class="ig-input" placeholder="Create a password" autocomplete="new-password">
+            </div>
+
+            <div class="ig-input-wrap">
+                <label for="loginPassword" id="loginPasswordLabel">Password</label>
+                <input type="password" id="loginPassword" class="ig-input" placeholder="Password" autocomplete="current-password" autofocus>
+            </div>
+
+            <button type="submit" class="ig-btn" id="authSubmitBtn">Log In</button>
+        </form>
+
+        <div class="ig-error" id="authErrorMsg"></div>
+    </div>
+</div>
+
+<!-- =====================================================
+     MAIN PROTECTED CONTENT
+===================================================== -->
+<div id="appContent">
+
+<header class="top-bar">
+    <button
+        class="menu-button no-print"
+        onclick="toggleSettingsMenu()"
+        title="Settings">
+        ⋮
+    </button>
+
+    <div class="shop-title">
+        <h1 id="shopNameDisplay"></h1>
+        <p id="occupationDisplay"></p>
+    </div>
+</header>
+
+<!-- SETTINGS -->
+<div id="settingsMenu" class="settings-menu no-print">
+
+    <div class="menu-header">
+        <strong>⚙ Settings</strong>
+    </div>
+
+    <div class="menu-item" onclick="openHeadingModal()">
+        🏷️ Heading
+    </div>
+
+    <div class="menu-item" id="securityMenuItem" onclick="openSecurityModal()">
+        🔒 Security / Password
+    </div>
+
+    <div class="menu-item" onclick="openProfileModal()">
+        👤 Change Profile Picture
+    </div>
+
+    <div class="menu-item" onclick="openNameModal()">
+        📝 Change Employee Name
+    </div>
+
+    <div class="menu-item" onclick="openShopModal()">
+        🏪 Change Shop Name
+    </div>
+
+    <div class="menu-item" onclick="openOccupationModal()">
+        💼 Change Occupation
+    </div>
+
+    <div class="theme-section">
+        <div class="theme-title">
+            🎨 Theme
+        </div>
+
+        <div class="theme-buttons">
+            <button class="btn-light-theme" onclick="setTheme('light')">
+                ☀️ Light
+            </button>
+
+            <button class="btn-dark-theme" onclick="setTheme('dark')">
+                🌙 Dark
+            </button>
+        </div>
+
+        <div class="theme-control">
+            <label>
+                <span>🖼️ Background Darkness</span>
+                <span id="menuDensityValue">0%</span>
+            </label>
+
+            <input
+                type="range"
+                id="menuBackgroundDensity"
+                min="0"
+                max="90"
+                value="0"
+                step="1"
+                oninput="changeBackgroundDensityFromMenu(this.value)">
+
+            <div class="theme-small-text">
+                Left = brighter image | Right = darker image
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-item" onclick="openBackgroundModal()">
+        🖼️ Add / Change Background Image
+    </div>
+
+    <div class="menu-item" onclick="removeBackgroundImage()">
+        🗑️ Remove Background Image
+    </div>
+
+    <div class="menu-item" onclick="removeProfilePhotoFromMenu()">
+        🗑️ Remove Profile Photo
+    </div>
+
+    <div class="menu-item" onclick="openDeletedHistoryModal()">
+        🗑️ Deleted History
+    </div>
+
+    <div class="menu-item" onclick="clearAllIncomeData()">
+        ⚠️ Clear All Data
+    </div>
+
+    <div class="menu-item" id="logoutMenuItem" onclick="lockAccount()" style="color:#dc2626; font-weight:bold;">
+        🔒 Logout / Lock
+    </div>
+
+</div>
+
+<div class="container">
+
+<!-- PROFILE -->
+<div class="profile-card">
+    <img id="profilePhoto" class="profile-photo" alt="Employee">
+    <div class="profile-info">
+        <h2 id="profileEmployeeName">Employee Name</h2>
+        <p>
+            🏪 <strong>Shop:</strong>
+            <span id="profileShopName"></span>
+        </p>
+        <p>
+            💼 <strong>Occupation:</strong>
+            <span id="profileOccupation"></span>
+        </p>
+    </div>
+</div>
+
+<!-- DATE -->
+<div class="card no-print">
+    <h2>📅 Select Date</h2>
+    <div class="date-controls">
+        <button class="btn btn-light" onclick="changeDate(-1)">
+            ◀ Previous
+        </button>
+
+        <input type="date" id="selectedDate" onchange="renderDailyEntries()">
+
+        <button class="btn btn-light" onclick="changeDate(1)">
+            Next ▶
+        </button>
+
+        <button class="btn btn-blue-main" onclick="goToday()">
+            Today
+        </button>
+    </div>
+</div>
+
+<!-- ADD ENTRY -->
+<div class="card no-print">
+    <h2>➕ Add Daily Earning</h2>
+    <div class="entry-grid">
+        <div class="field">
+            <label>Customer Name</label>
+            <input type="text" id="customerName" placeholder="Customer name" autocomplete="off">
+        </div>
+
+        <div class="field">
+            <label>Work / Product</label>
+            <input type="text" id="workDone" placeholder="e.g. Print, Xerox, Design, Product" autocomplete="off">
+        </div>
+
+        <div class="field">
+            <label>Payment Type</label>
+            <select id="paymentMode" onchange="updatePaymentFields()">
+                <option value="Online">Online</option>
+                <option value="Offline">Offline</option>
+                <option value="Split">Split Payment</option>
+            </select>
+        </div>
+
+        <div class="field" id="singleAmountField">
+            <label>Amount ₹</label>
+            <input type="number" id="paymentAmount" min="0" step="0.01" placeholder="Amount">
+        </div>
+    </div>
+
+    <div id="splitFields" class="payment-fields hidden">
+        <div class="field">
+            <label>Online Paid ₹</label>
+            <input type="number" id="onlineAmount" min="0" step="0.01" placeholder="Online amount" oninput="updateSplitTotal()">
+        </div>
+
+        <div class="field">
+            <label>Offline Paid ₹</label>
+            <input type="number" id="offlineAmount" min="0" step="0.01" placeholder="Offline amount" oninput="updateSplitTotal()">
+        </div>
+
+        <div class="field">
+            <label>Total ₹</label>
+            <input type="number" id="splitTotal" readonly>
+        </div>
+    </div>
+
+    <div style="margin-top:15px">
+        <button class="btn btn-green-main" id="saveEntryButton" onclick="saveEntry()">
+            💾 Save Entry
+        </button>
+
+        <button class="btn btn-light" id="cancelEditButton" onclick="cancelEdit()" style="display:none">
+            Cancel Edit
+        </button>
+    </div>
+</div>
+
+<!-- DAILY TABLE -->
+<div class="card">
+    <div class="section-title">
+        <h2>
+            📋 Daily Earnings -
+            <span id="dailyDateTitle"></span>
+        </h2>
+
+        <button class="btn btn-blue-main no-print" onclick="printDailyDiary()">
+            🖨️ Print Daily Diary
+        </button>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Customer Name</th>
+                    <th>Work / Product</th>
+                    <th>Payment</th>
+                    <th>Online</th>
+                    <th>Offline</th>
+                    <th>Total</th>
+                    <th class="no-print">Action</th>
+                </tr>
+            </thead>
+            <tbody id="dailyTableBody"></tbody>
+        </table>
+    </div>
+
+    <div class="daily-summary">
+        <div class="summary-box online-box">
+            <span>Online</span>
+            <strong id="dailyOnline">₹0</strong>
+        </div>
+
+        <div class="summary-box offline-box">
+            <span>Offline</span>
+            <strong id="dailyOffline">₹0</strong>
+        </div>
+
+        <div class="summary-box total-box">
+            <span>Daily Total</span>
+            <strong id="dailyTotal">₹0</strong>
+        </div>
+    </div>
+</div>
+
+<!-- DAILY HISTORY -->
+<div class="card">
+    <div class="section-title">
+        <h2>📆 Daily Earning History</h2>
+        <select id="dailyHistoryMonth" class="no-print" onchange="renderDailyHistory()"></select>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Online</th>
+                    <th>Offline</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="dailyHistoryBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MONTHLY SUMMARY -->
+<div class="card">
+    <div class="section-title">
+        <h2>📊 Monthly Summary</h2>
+        <select id="monthlySummaryMonth" class="no-print" onchange="renderMonthlySummary()"></select>
+    </div>
+
+    <div class="daily-summary">
+        <div class="summary-box online-box">
+            <span>Online</span>
+            <strong id="monthlyOnline">₹0</strong>
+        </div>
+
+        <div class="summary-box offline-box">
+            <span>Offline</span>
+            <strong id="monthlyOffline">₹0</strong>
+        </div>
+
+        <div class="summary-box total-box">
+            <span>Monthly Total</span>
+            <strong id="monthlyTotal">₹0</strong>
+        </div>
+    </div>
+
+    <div style="margin-top:15px">
+        <strong>Working Days: <span id="workingDays">0</span></strong>
+        &nbsp;&nbsp;
+        <strong>Average / Day: ₹<span id="averagePerDay">0.00</span></strong>
+    </div>
+</div>
+
+<!-- FINANCIAL TOTALS -->
+<div class="card">
+    <h2>💰 Financial Totals</h2>
+    <div class="financial-grid">
+        <div class="financial-box">
+            <h3>This Month</h3>
+            <strong id="thisMonthTotal">₹0</strong>
+        </div>
+
+        <div class="financial-box">
+            <h3>This Year</h3>
+            <strong id="thisYearTotal">₹0</strong>
+        </div>
+
+        <div class="financial-box">
+            <h3>All Time</h3>
+            <strong id="allTimeTotal">₹0</strong>
+        </div>
+    </div>
+</div>
+
+<!-- COMPLETE HISTORY -->
+<div class="card">
+    <div class="section-title">
+        <h2>📚 Complete Earning History</h2>
+        <select id="completeHistoryYear" class="no-print" onchange="renderCompleteHistory()"></select>
+    </div>
+
+    <p>Complete record: <strong>Year → Month → Date → Customer → Work / Product → Payment</strong></p>
+
+    <div id="completeHistoryContainer"></div>
+</div>
+
+<!-- CUSTOMER HISTORY -->
+<div class="card">
+    <div class="section-title">
+        <h2>🔎 Customer History</h2>
+    </div>
+
+    <p>Search any customer to see their complete history.</p>
+
+    <div class="customer-search-box no-print">
+        <input type="text" id="customerSearch" placeholder="Enter customer name..." oninput="searchCustomerHistory()" autocomplete="off">
+        <button class="btn btn-blue-main" onclick="searchCustomerHistory()">🔎 Search Customer</button>
+        <button class="btn btn-light" onclick="clearCustomerSearch()">Clear</button>
+    </div>
+
+    <div id="customerHistoryContainer">
+        <div class="no-data">
+            Enter a customer name to see their complete history.
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer>
+    © <span id="footerYear"></span> <span id="footerShopName"></span> Daily Diary
+</footer>
+
+</div><!-- /#appContent -->
+
+<!-- =====================================================
+     MODALS
+===================================================== -->
+
+<!-- HEADING MODAL -->
+<div id="headingModal" class="settings-modal" onclick="closeModalOnBackground(event,this)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h2>🏷️ Heading Settings</h2>
+        <label style="font-weight:bold; font-size:13px; display:block; margin-top:10px;">
+            Main Title (Shop / Business Name)
+        </label>
+        <input type="text" id="headingMainTitle" placeholder="e.g. My Business">
+
+        <label style="font-weight:bold; font-size:13px; display:block; margin-top:10px;">
+            Sub-heading (Occupation / Role)
+        </label>
+        <input type="text" id="headingSubtitle" placeholder="e.g. Administrator / Shop Owner">
+
+        <div class="modal-buttons">
+            <button class="btn btn-light" onclick="closeAllModals()">Cancel</button>
+            <button class="btn btn-blue-main" onclick="saveHeadingSettings()">Save Heading</button>
+        </div>
+    </div>
+</div>
+
+<!-- SECURITY MODAL (CHANGE OR REMOVE PASSWORD) -->
+<div id="securityModal" class="settings-modal" onclick="closeModalOnBackground(event,this)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h2 id="securityModalTitle">🔒 Security & Password Settings</h2>
+        
+        <div id="currentPasswordSection">
+            <label style="font-weight:bold; font-size:13px; display:block; margin-top:10px;">Current Password</label>
+            <input type="password" id="currentPasswordInput" placeholder="Enter current password">
+        </div>
+
+        <label style="font-weight:bold; font-size:13px; display:block; margin-top:10px;" id="newPasswordLabel">New Password</label>
+        <input type="password" id="newPasswordInput" placeholder="Enter new password (min. 4 characters)">
+
+        <div class="modal-buttons">
+            <button class="btn btn-red" id="removePasswordBtn" onclick="removePasswordFromModal()">
+                🗑️ Remove Password
+            </button>
+            <button class="btn btn-light" onclick="closeAllModals()">Cancel</button>
+            <button class="btn btn-blue-main" id="savePasswordModalBtn" onclick="updatePasswordFromModal()">Save Password</button>
+        </div>
+    </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profileModal" class="settings-modal" onclick="closeModalOnBackground(event,this)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h2>👤 Change Profile Picture</h2>
+        <input type="file" id="profileImageInput" accept="image/*" onchange="previewProfileImage()">
+
+        <div class="profile-preview-wrap">
+            <img id="profilePreview" alt="Profile Preview">
+        </div>
+
+        <div class="profile-size-box">
+            <div class="profile-size-title">
+                <span>📏 Profile Picture Size</span>
+                <span class="density-value"><span id="profileSizeValue">90</span> px</span>
+            </div>
+            <input type="range" id="profileSize" min="60" max="180" value="90" step="1" oninput="previewProfileSize()">
+        </div>
+
+        <div class="profile-position-box">
+            <div class="profile-position-title">
+                <span>↔️ Horizontal Position</span>
+                <span><span id="profilePosXValue">50</span>%</span>
+            </div>
+            <input type="range" id="profilePosX" min="0" max="100" value="50" step="1" oninput="updateProfilePreview()">
+
+            <div class="profile-position-title">
+                <span>↕️ Vertical Position</span>
+                <span><span id="profilePosYValue">50</span>%</span>
+            </div>
+            <input type="range" id="profilePosY" min="0" max="100" value="50" step="1" oninput="updateProfilePreview()">
+
+            <div class="profile-position-title">
+                <span>🔍 Zoom</span>
+                <span><span id="profileZoomValue">100</span>%</span>
+            </div>
+            <input type="range" id="profileZoom" min="100" max="200" value="100" step="1" oninput="updateProfilePreview()">
+        </div>
+
+        <div class="modal-buttons">
+            <button class="btn btn-light" onclick="closeAllModals()">Cancel</button>
+            <button class="btn btn-blue-main" onclick="saveProfileImage()">Save Photo</button>
+        </div>
+    </div>
+</div>
+
+<!-- NAME MODAL -->
+<div id="nameModal" class="settings-modal" onclick="closeModalOnBackground(event,this)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h2>📝 Change Employee Name</h2>
+        <input type="text" id="newEmployeeName" placeholder="Enter employee name">
+        <div class="modal-buttons">
+            <button class="btn btn-light" onclick="closeAllModals()">Cancel</button>
+            <button class="btn btn-blue-main" onclick="saveNewEmployeeName()">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- SHOP MODAL -->
+<div id="shopModal" class="settings-modal" onclick="closeModalOnBackground(event,this)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h2>🏪 Change Shop Name</h2>
+        <input type="text" id="newShopName" placeholder="Enter shop name">
+        <div class="modal-buttons">
+            <button class="btn btn-light" onclick="closeAllModals()">Cancel</button>
+            <button class="btn btn-blue-main" onclick="saveNewShopName()">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- OCCUPATION MODAL -->
+<div id="occupationModal" class="settings-modal" onclick="closeModalOnBackground(event,this)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h2>💼 Change Occupation</h2>
+        <input type="text" id="newOccupation" placeholder="Enter occupation">
+        <div class="modal-buttons">
+            <button class="btn btn-light" onclick="closeAllModals()">Cancel</button>
+            <button class="btn btn-blue-main" onclick="saveNewOccupation()">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- BACKGROUND MODAL -->
+<div id="backgroundModal" class="settings-modal" onclick="closeModalOnBackground(event,this)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h2>🖼️ Change Background Image</h2>
+        <p>Select any image from your computer.</p>
+        <input type="file" id="backgroundImageInput" accept="image/*" onchange="previewBackgroundImage()">
+        <div id="backgroundPreview" class="background-preview-wrap"></div>
+
+        <div class="background-density-box">
+            <div class="background-density-title">
+                <span>🌑 Image Darkness</span>
+                <span class="density-value"><span id="densityValue">0</span>%</span>
+            </div>
+            <input type="range" id="backgroundDensity" min="0" max="90" value="0" step="1" oninput="previewBackgroundDensity()">
+            <div class="density-description">0% = clear image | 90% = very dark image</div>
+        </div>
+
+        <div class="background-position-box">
+            <div class="background-position-label">
+                <span>↔️ Horizontal Position</span>
+                <span><span id="backgroundPosXValue">50</span>%</span>
+            </div>
+            <input type="range" id="backgroundPosX" min="0" max="100" value="50" step="1" oninput="updateBackgroundPreview()">
+
+            <div class="background-position-label">
+                <span>↕️ Vertical Position</span>
+                <span><span id="backgroundPosYValue">50</span>%</span>
+            </div>
+            <input type="range" id="backgroundPosY" min="0" max="100" value="50" step="1" oninput="updateBackgroundPreview()">
+        </div>
+
+        <div class="modal-buttons">
+            <button class="btn btn-light" onclick="closeAllModals()">Cancel</button>
+            <button class="btn btn-blue-main" onclick="saveBackgroundImage()">Save Background</button>
+        </div>
+    </div>
+</div>
+
+<!-- DELETED HISTORY MODAL -->
+<div id="deletedHistoryModal" class="settings-modal" onclick="closeModalOnBackground(event,this)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h2>🗑️ Deleted History</h2>
+        <div id="deletedHistoryContainer"></div>
+        <div class="modal-buttons">
+            <button class="btn btn-light" onclick="closeAllModals()">Close</button>
+            <button class="btn btn-red" onclick="clearDeletedHistory()">🗑️ Permanently Clear Deleted History</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* =====================================================
+   STORAGE & AUTH STATE
+===================================================== */
+const ENTRY_KEY = "omSaiEntries";
+const DELETED_ENTRY_KEY = "omSaiDeletedEntries";
+const PASSWORD_HASH_KEY = "omSaiDiaryPassHash";
+
+let entries = JSON.parse(localStorage.getItem(ENTRY_KEY) || "[]");
+let deletedEntries = JSON.parse(localStorage.getItem(DELETED_ENTRY_KEY) || "[]");
+let editingId = null;
+
+/* =====================================================
+   CRYPTOGRAPHY (SHA-256 HASH)
+===================================================== */
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+/* =====================================================
+   AUTHENTICATION LOGIC (INSTAGRAM FLOW)
+===================================================== */
+function checkAuthStatus() {
+    const storedHash = localStorage.getItem(PASSWORD_HASH_KEY);
+
+    // If password was intentionally removed/disabled, open app immediately
+    if (storedHash === "DISABLED") {
+        unlockApp();
+        return;
+    }
+
+    const regWrap = document.getElementById("registerWrap");
+    const loginLabel = document.getElementById("loginPasswordLabel");
+    const submitBtn = document.getElementById("authSubmitBtn");
+    const subtitle = document.getElementById("authSubtitle");
+
+    const savedShopName = localStorage.getItem("omSaiShopName") || "Daily Diary";
+    document.getElementById("authBrandTitle").textContent = savedShopName;
+
+    if (!storedHash) {
+        // First-time visit: Create Password
+        regWrap.style.display = "block";
+        loginLabel.textContent = "Confirm Password";
+        document.getElementById("loginPassword").placeholder = "Confirm Password";
+        submitBtn.textContent = "Set Password & Enter";
+        subtitle.textContent = "Create your personal account password to get started";
+    } else {
+        // Regular visit: Login
+        regWrap.style.display = "none";
+        loginLabel.textContent = "Password";
+        document.getElementById("loginPassword").placeholder = "Password";
+        submitBtn.textContent = "Log In";
+        subtitle.textContent = "Enter your password to access your diary";
+    }
+}
+
+async function handleAuthSubmit(event) {
+    event.preventDefault();
+    const storedHash = localStorage.getItem(PASSWORD_HASH_KEY);
+    const loginPass = document.getElementById("loginPassword").value;
+    const errorMsg = document.getElementById("authErrorMsg");
+    errorMsg.textContent = "";
+
+    if (!storedHash) {
+        // Registration flow
+        const regPass = document.getElementById("regPassword").value;
+        if (!regPass || regPass.length < 4) {
+            errorMsg.textContent = "Password must be at least 4 characters.";
+            return;
+        }
+        if (regPass !== loginPass) {
+            errorMsg.textContent = "Passwords do not match.";
+            return;
+        }
+        const hashed = await sha256(regPass);
+        localStorage.setItem(PASSWORD_HASH_KEY, hashed);
+        unlockApp();
+    } else {
+        // Login flow
+        if (!loginPass) {
+            errorMsg.textContent = "Please enter your password.";
+            return;
+        }
+        const hashedInput = await sha256(loginPass);
+        if (hashedInput === storedHash) {
+            unlockApp();
+        } else {
+            errorMsg.textContent = "Incorrect password. Please try again.";
+        }
+    }
+}
+
+function unlockApp() {
+    document.getElementById("authOverlay").style.display = "none";
+    document.getElementById("appContent").style.display = "block";
+    updateMenuSecurityState();
+    initialize();
+}
+
+function lockAccount() {
+    const storedHash = localStorage.getItem(PASSWORD_HASH_KEY);
+    if (!storedHash || storedHash === "DISABLED") {
+        alert("No active password is set. Use 'Security / Password' in Settings to create one.");
+        return;
+    }
+    closeSettingsMenu();
+    document.getElementById("loginPassword").value = "";
+    document.getElementById("regPassword").value = "";
+    document.getElementById("authErrorMsg").textContent = "";
+    document.getElementById("appContent").style.display = "none";
+    document.getElementById("authOverlay").style.display = "flex";
+    checkAuthStatus();
+}
+
+function updateMenuSecurityState() {
+    const storedHash = localStorage.getItem(PASSWORD_HASH_KEY);
+    const securityItem = document.getElementById("securityMenuItem");
+    const logoutItem = document.getElementById("logoutMenuItem");
+
+    if (!storedHash || storedHash === "DISABLED") {
+        if (securityItem) securityItem.innerHTML = "🔒 Set / Enable Password";
+        if (logoutItem) logoutItem.style.display = "none";
+    } else {
+        if (securityItem) securityItem.innerHTML = "🔒 Change / Remove Password";
+        if (logoutItem) logoutItem.style.display = "block";
+    }
+}
+
+function openSecurityModal() {
+    closeSettingsMenu();
+    const storedHash = localStorage.getItem(PASSWORD_HASH_KEY);
+    const hasActivePass = storedHash && storedHash !== "DISABLED";
+
+    document.getElementById("currentPasswordInput").value = "";
+    document.getElementById("newPasswordInput").value = "";
+
+    const currSec = document.getElementById("currentPasswordSection");
+    const removeBtn = document.getElementById("removePasswordBtn");
+    const saveBtn = document.getElementById("savePasswordModalBtn");
+    const title = document.getElementById("securityModalTitle");
+    const label = document.getElementById("newPasswordLabel");
+
+    if (hasActivePass) {
+        currSec.style.display = "block";
+        removeBtn.style.display = "inline-block";
+        saveBtn.textContent = "Update Password";
+        title.textContent = "🔒 Change or Remove Password";
+        label.textContent = "New Password";
+    } else {
+        currSec.style.display = "none";
+        removeBtn.style.display = "none";
+        saveBtn.textContent = "Enable Password";
+        title.textContent = "🔒 Set Security Password";
+        label.textContent = "Create Password";
+    }
+
+    document.getElementById("securityModal").classList.add("show");
+}
+
+async function updatePasswordFromModal() {
+    const storedHash = localStorage.getItem(PASSWORD_HASH_KEY);
+    const hasActivePass = storedHash && storedHash !== "DISABLED";
+    const currentPass = document.getElementById("currentPasswordInput").value;
+    const newPass = document.getElementById("newPasswordInput").value;
+
+    if (hasActivePass) {
+        if (!currentPass) {
+            alert("Please enter your current password.");
+            return;
+        }
+        const currentHash = await sha256(currentPass);
+        if (currentHash !== storedHash) {
+            alert("Current password is incorrect.");
+            return;
+        }
+    }
+
+    if (!newPass || newPass.length < 4) {
+        alert("New password must be at least 4 characters.");
+        return;
+    }
+
+    const newHash = await sha256(newPass);
+    localStorage.setItem(PASSWORD_HASH_KEY, newHash);
+    closeAllModals();
+    updateMenuSecurityState();
+    alert("Password saved and activated successfully!");
+}
+
+async function removePasswordFromModal() {
+    const storedHash = localStorage.getItem(PASSWORD_HASH_KEY);
+    const currentPass = document.getElementById("currentPasswordInput").value;
+
+    if (!currentPass) {
+        alert("Please enter your current password to confirm removal.");
+        return;
+    }
+
+    const currentHash = await sha256(currentPass);
+    if (currentHash !== storedHash) {
+        alert("Current password is incorrect.");
+        return;
+    }
+
+    if (!confirm("Are you sure you want to completely REMOVE password protection?\n\nAnyone opening this link will be able to view and manage your records.")) {
+        return;
+    }
+
+    localStorage.setItem(PASSWORD_HASH_KEY, "DISABLED");
+    closeAllModals();
+    updateMenuSecurityState();
+    alert("Password removed. The website will now open directly without asking for a password.");
+}
+
+/* =====================================================
+   HELPERS
+===================================================== */
+function money(value){
+    return "₹" + Number(value || 0).toLocaleString("en-IN", {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+    });
+}
+
+function formatDate(date){
+    const d = new Date(date + "T00:00:00");
+    return d.toLocaleDateString("en-IN", {
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+    });
+}
+
+function monthName(month){
+    return new Date(2000, Number(month), 1).toLocaleString("en-IN", {
+        month:"long"
+    });
+}
+
+function saveEntries(){
+    localStorage.setItem(ENTRY_KEY, JSON.stringify(entries));
+}
+
+function saveDeletedEntries(){
+    localStorage.setItem(DELETED_ENTRY_KEY, JSON.stringify(deletedEntries));
+}
+
+function escapeHtml(text){
+    const div = document.createElement("div");
+    div.textContent = text == null ? "" : text;
+    return div.innerHTML;
+}
+
+function getEntryOnline(entry){
+    if(typeof entry.online === "number") return entry.online;
+    if(entry.mode === "Online") return Number(entry.amount) || 0;
+    return 0;
+}
+
+function getEntryOffline(entry){
+    if(typeof entry.offline === "number") return entry.offline;
+    if(entry.mode === "Offline") return Number(entry.amount) || 0;
+    return 0;
+}
+
+function getEntryTotal(entry){
+    return getEntryOnline(entry) + getEntryOffline(entry);
+}
+
+function getTodayString(){
+    const now = new Date();
+    return (
+        now.getFullYear() + "-" +
+        String(now.getMonth()+1).padStart(2,"0") + "-" +
+        String(now.getDate()).padStart(2,"0")
+    );
+}
+
+function goToday(){
+    document.getElementById("selectedDate").value = getTodayString();
+    renderDailyEntries();
+}
+
+function changeDate(days){
+    const input = document.getElementById("selectedDate");
+    if(!input.value) input.value = getTodayString();
+    const date = new Date(input.value + "T00:00:00");
+    date.setDate(date.getDate() + days);
+    input.value = date.getFullYear() + "-" + String(date.getMonth()+1).padStart(2,"0") + "-" + String(date.getDate()).padStart(2,"0");
+    renderDailyEntries();
+}
+
+function updatePaymentFields(){
+    const mode = document.getElementById("paymentMode").value;
+    const single = document.getElementById("singleAmountField");
+    const split = document.getElementById("splitFields");
+
+    if(mode === "Split"){
+        single.classList.add("hidden");
+        split.classList.remove("hidden");
+    }else{
+        single.classList.remove("hidden");
+        split.classList.add("hidden");
+    }
+}
+
+function updateSplitTotal(){
+    const online = Number(document.getElementById("onlineAmount").value) || 0;
+    const offline = Number(document.getElementById("offlineAmount").value) || 0;
+    document.getElementById("splitTotal").value = online + offline;
+}
+
+function saveEntry(){
+    const date = document.getElementById("selectedDate").value;
+    const customer = document.getElementById("customerName").value.trim();
+    const work = document.getElementById("workDone").value.trim();
+    const mode = document.getElementById("paymentMode").value;
+
+    if(!customer){
+        alert("Please enter customer name.");
+        document.getElementById("customerName").focus();
+        return;
+    }
+
+    if(!work){
+        alert("Please enter work / product.");
+        document.getElementById("workDone").focus();
+        return;
+    }
+
+    let online = 0;
+    let offline = 0;
+
+    if(mode === "Online"){
+        online = Number(document.getElementById("paymentAmount").value) || 0;
+    }
+    if(mode === "Offline"){
+        offline = Number(document.getElementById("paymentAmount").value) || 0;
+    }
+    if(mode === "Split"){
+        online = Number(document.getElementById("onlineAmount").value) || 0;
+        offline = Number(document.getElementById("offlineAmount").value) || 0;
+    }
+
+    const total = online + offline;
+    if(total <= 0){
+        alert("Please enter a valid amount.");
+        return;
+    }
+
+    if(editingId !== null){
+        const index = entries.findIndex(e => e.id === editingId);
+        if(index !== -1){
+            entries[index] = {
+                ...entries[index],
+                date, customer, work, mode, online, offline, amount:total
+            };
+        }
+        editingId = null;
+        document.getElementById("saveEntryButton").textContent = "💾 Save Entry";
+        document.getElementById("cancelEditButton").style.display = "none";
+    }else{
+        entries.push({
+            id:Date.now(),
+            date, customer, work, mode, online, offline, amount:total
+        });
+    }
+
+    saveEntries();
+    clearEntryFields();
+    renderAll();
+}
+
+function editEntry(id){
+    const entry = entries.find(e => e.id === id);
+    if(!entry) return;
+
+    editingId = id;
+    document.getElementById("selectedDate").value = entry.date;
+    document.getElementById("customerName").value = entry.customer;
+    document.getElementById("workDone").value = entry.work;
+
+    let mode = entry.mode;
+    if(entry.online > 0 && entry.offline > 0){
+        mode = "Split";
+    }
+    document.getElementById("paymentMode").value = mode;
+    updatePaymentFields();
+
+    if(mode === "Split"){
+        document.getElementById("onlineAmount").value = entry.online;
+        document.getElementById("offlineAmount").value = entry.offline;
+        updateSplitTotal();
+    }else{
+        document.getElementById("paymentAmount").value = mode === "Online" ? entry.online : entry.offline;
+    }
+
+    document.getElementById("saveEntryButton").textContent = "💾 Update Entry";
+    document.getElementById("cancelEditButton").style.display = "inline-block";
+    window.scrollTo({ top:350, behavior:"smooth" });
+}
+
+function cancelEdit(){
+    if(editingId === null) return;
+    editingId = null;
+    clearEntryFields();
+    document.getElementById("saveEntryButton").textContent = "💾 Save Entry";
+    document.getElementById("cancelEditButton").style.display = "none";
+}
+
+function deleteEntry(id){
+    const entry = entries.find(e => e.id === id);
+    if(!entry) return;
+
+    if(!confirm("Delete this earning entry?\n\nIt will be moved to Deleted History and can be recovered.")) return;
+
+    deletedEntries.unshift({
+        ...entry,
+        deletedAt:new Date().toISOString()
+    });
+
+    entries = entries.filter(e => e.id !== id);
+    saveEntries();
+    saveDeletedEntries();
+    renderAll();
+    alert("Entry moved to Deleted History.");
+}
+
+function openDeletedHistoryModal(){
+    closeSettingsMenu();
+    renderDeletedHistory();
+    document.getElementById("deletedHistoryModal").classList.add("show");
+}
+
+function renderDeletedHistory(){
+    const container = document.getElementById("deletedHistoryContainer");
+    if(!deletedEntries.length){
+        container.innerHTML = `<div class="no-data">🗑️ No deleted history found.</div>`;
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="deleted-history-summary">
+            <strong>${deletedEntries.length}</strong> deleted record(s) are stored here. You can recover them or permanently delete them.
+        </div>
+    `;
+
+    deletedEntries.forEach((entry,index) => {
+        const online = getEntryOnline(entry);
+        const offline = getEntryOffline(entry);
+        const total = getEntryTotal(entry);
+
+        const card = document.createElement("div");
+        card.className = "deleted-entry-card";
+        card.innerHTML = `
+            <div class="deleted-entry-top">
+                <strong>${escapeHtml(entry.customer)}</strong>
+                <strong>${money(total)}</strong>
+            </div>
+            <div class="deleted-entry-info">
+                📅 <strong>Date:</strong> ${formatDate(entry.date)}<br>
+                🛠️ <strong>Work / Product:</strong> ${escapeHtml(entry.work)}<br>
+                💳 <strong>Payment:</strong> ${escapeHtml(entry.mode)}<br>
+                🟢 <strong>Online:</strong> ${money(online)} &nbsp;&nbsp; 🟡 <strong>Offline:</strong> ${money(offline)}
+            </div>
+            <div class="deleted-entry-actions">
+                <button class="small-btn recover-btn" onclick="recoverDeletedEntry(${index})">♻️ Recover</button>
+                <button class="small-btn permanent-delete-btn" onclick="permanentlyDeleteEntry(${index})">❌ Permanently Delete</button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function recoverDeletedEntry(index){
+    const entry = deletedEntries[index];
+    if(!entry) return;
+
+    if(!confirm("Recover this deleted earning entry?")) return;
+
+    const recoveredEntry = { ...entry };
+    delete recoveredEntry.deletedAt;
+
+    if(entries.some(e => e.id === recoveredEntry.id)){
+        recoveredEntry.id = Date.now() + Math.floor(Math.random()*1000);
+    }
+
+    entries.push(recoveredEntry);
+    deletedEntries.splice(index, 1);
+    saveEntries();
+    saveDeletedEntries();
+    renderAll();
+    renderDeletedHistory();
+    alert("Entry recovered successfully.");
+}
+
+function permanentlyDeleteEntry(index){
+    const entry = deletedEntries[index];
+    if(!entry) return;
+
+    if(!confirm("Permanently delete this record?\n\nThis cannot be recovered.")) return;
+
+    deletedEntries.splice(index, 1);
+    saveDeletedEntries();
+    renderDeletedHistory();
+}
+
+function clearDeletedHistory(){
+    if(!deletedEntries.length){
+        alert("Deleted History is already empty.");
+        return;
+    }
+    const confirmation = prompt("This will permanently delete ALL records inside Deleted History.\n\nType DELETE to confirm:");
+    if(confirmation !== "DELETE"){
+        alert("Cancelled.");
+        return;
+    }
+    deletedEntries = [];
+    saveDeletedEntries();
+    renderDeletedHistory();
+    alert("Deleted History permanently cleared.");
+}
+
+function clearEntryFields(){
+    document.getElementById("customerName").value = "";
+    document.getElementById("workDone").value = "";
+    document.getElementById("paymentAmount").value = "";
+    document.getElementById("onlineAmount").value = "";
+    document.getElementById("offlineAmount").value = "";
+    document.getElementById("splitTotal").value = "";
+    document.getElementById("paymentMode").value = "Online";
+    updatePaymentFields();
+}
+
+function renderDailyEntries(){
+    const date = document.getElementById("selectedDate").value;
+    document.getElementById("dailyDateTitle").textContent = formatDate(date);
+
+    const daily = entries.filter(e => e.date === date);
+    const body = document.getElementById("dailyTableBody");
+    body.innerHTML = "";
+
+    let onlineTotal = 0;
+    let offlineTotal = 0;
+
+    if(daily.length === 0){
+        body.innerHTML = `<tr><td colspan="8" class="no-data">No earnings recorded for this date.</td></tr>`;
+    }else{
+        daily.forEach((entry,index) => {
+            const online = getEntryOnline(entry);
+            const offline = getEntryOffline(entry);
+            const total = getEntryTotal(entry);
+
+            onlineTotal += online;
+            offlineTotal += offline;
+
+            body.innerHTML += `
+            <tr>
+                <td>${index+1}</td>
+                <td>${escapeHtml(entry.customer)}</td>
+                <td>${escapeHtml(entry.work)}</td>
+                <td>${escapeHtml(entry.mode)}</td>
+                <td>${money(online)}</td>
+                <td>${money(offline)}</td>
+                <td><strong>${money(total)}</strong></td>
+                <td class="no-print">
+                    <div class="action-buttons">
+                        <button class="small-btn edit-btn" onclick="editEntry(${entry.id})">Edit</button>
+                        <button class="small-btn delete-btn" onclick="deleteEntry(${entry.id})">Delete</button>
+                    </div>
+                </td>
+            </tr>`;
+        });
+    }
+
+    document.getElementById("dailyOnline").textContent = money(onlineTotal);
+    document.getElementById("dailyOffline").textContent = money(offlineTotal);
+    document.getElementById("dailyTotal").textContent = money(onlineTotal + offlineTotal);
+}
+
+function populateMonthSelectors(){
+    const months = new Set();
+    entries.forEach(entry => {
+        if(entry.date){
+            const d = new Date(entry.date + "T00:00:00");
+            months.add(d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0"));
+        }
+    });
+
+    const now = new Date();
+    const current = now.getFullYear() + "-" + String(now.getMonth()+1).padStart(2,"0");
+    months.add(current);
+
+    const sorted = [...months].sort().reverse();
+    const selectors = [
+        document.getElementById("dailyHistoryMonth"),
+        document.getElementById("monthlySummaryMonth")
+    ];
+
+    selectors.forEach(select => {
+        const old = select.value;
+        select.innerHTML = "";
+        sorted.forEach(value => {
+            const [year,month] = value.split("-");
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = `${monthName(Number(month)-1)} ${year}`;
+            select.appendChild(option);
+        });
+        if(sorted.includes(old)) select.value = old;
+        else select.value = current;
+    });
+}
+
+function renderDailyHistory(){
+    const value = document.getElementById("dailyHistoryMonth").value;
+    if(!value) return;
+
+    const [year,month] = value.split("-").map(Number);
+    const monthly = entries.filter(entry => {
+        const d = new Date(entry.date + "T00:00:00");
+        return (d.getFullYear() === year && d.getMonth() === month-1);
+    });
+
+    const grouped = {};
+    monthly.forEach(entry => {
+        if(!grouped[entry.date]) grouped[entry.date] = { online:0, offline:0 };
+        grouped[entry.date].online += getEntryOnline(entry);
+        grouped[entry.date].offline += getEntryOffline(entry);
+    });
+
+    const body = document.getElementById("dailyHistoryBody");
+    body.innerHTML = "";
+    const dates = Object.keys(grouped).sort();
+
+    if(!dates.length){
+        body.innerHTML = `<tr><td colspan="4" class="no-data">No earnings recorded for this month.</td></tr>`;
+        return;
+    }
+
+    dates.forEach(date => {
+        const online = grouped[date].online;
+        const offline = grouped[date].offline;
+        body.innerHTML += `
+        <tr>
+            <td>${formatDate(date)}</td>
+            <td>${money(online)}</td>
+            <td>${money(offline)}</td>
+            <td><strong>${money(online + offline)}</strong></td>
+        </tr>`;
+    });
+}
+
+function renderMonthlySummary(){
+    const value = document.getElementById("monthlySummaryMonth").value;
+    if(!value) return;
+
+    const [year,month] = value.split("-").map(Number);
+    const monthly = entries.filter(entry => {
+        const d = new Date(entry.date + "T00:00:00");
+        return (d.getFullYear() === year && d.getMonth() === month-1);
+    });
+
+    let online = 0;
+    let offline = 0;
+    const dates = new Set();
+
+    monthly.forEach(entry => {
+        online += getEntryOnline(entry);
+        offline += getEntryOffline(entry);
+        dates.add(entry.date);
+    });
+
+    const total = online + offline;
+    document.getElementById("monthlyOnline").textContent = money(online);
+    document.getElementById("monthlyOffline").textContent = money(offline);
+    document.getElementById("monthlyTotal").textContent = money(total);
+    document.getElementById("workingDays").textContent = dates.size;
+    document.getElementById("averagePerDay").textContent = dates.size ? (total / dates.size).toFixed(2) : "0.00";
+}
+
+function renderFinancialTotals(){
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+
+    let thisMonth = 0;
+    let thisYear = 0;
+    let allTime = 0;
+
+    entries.forEach(entry => {
+        const total = getEntryTotal(entry);
+        allTime += total;
+        const d = new Date(entry.date + "T00:00:00");
+        if(d.getFullYear() === year){
+            thisYear += total;
+            if(d.getMonth() === month){
+                thisMonth += total;
+            }
+        }
+    });
+
+    document.getElementById("thisMonthTotal").textContent = money(thisMonth);
+    document.getElementById("thisYearTotal").textContent = money(thisYear);
+    document.getElementById("allTimeTotal").textContent = money(allTime);
+}
+
+function populateYearSelector(){
+    const select = document.getElementById("completeHistoryYear");
+    const years = new Set();
+
+    entries.forEach(entry => {
+        if(entry.date){
+            years.add(new Date(entry.date + "T00:00:00").getFullYear());
+        }
+    });
+
+    years.add(new Date().getFullYear());
+    const sorted = [...years].sort((a,b) => b-a);
+    const old = select.value;
+    select.innerHTML = "";
+
+    sorted.forEach(year => {
+        const option = document.createElement("option");
+        option.value = year;
+        option.textContent = year;
+        select.appendChild(option);
+    });
+
+    if(sorted.includes(Number(old))) select.value = old;
+}
+
+function renderCompleteHistory(){
+    const year = Number(document.getElementById("completeHistoryYear").value);
+    const container = document.getElementById("completeHistoryContainer");
+    container.innerHTML = "";
+
+    const yearEntries = entries
+        .filter(entry => new Date(entry.date + "T00:00:00").getFullYear() === year)
+        .sort((a,b) => a.date.localeCompare(b.date));
+
+    if(!yearEntries.length){
+        container.innerHTML = `<div class="no-data">No earnings recorded in ${year}.</div>`;
+        return;
+    }
+
+    const months = {};
+    yearEntries.forEach(entry => {
+        const d = new Date(entry.date + "T00:00:00");
+        const m = d.getMonth();
+        if(!months[m]) months[m] = {};
+        if(!months[m][entry.date]) months[m][entry.date] = [];
+        months[m][entry.date].push(entry);
+    });
+
+    let yearlyOnline = 0;
+    let yearlyOffline = 0;
+
+    Object.keys(months).sort((a,b) => a-b).forEach(month => {
+        const dates = months[month];
+        let monthOnline = 0;
+        let monthOffline = 0;
+
+        Object.values(dates).flat().forEach(entry => {
+            monthOnline += getEntryOnline(entry);
+            monthOffline += getEntryOffline(entry);
+        });
+
+        yearlyOnline += monthOnline;
+        yearlyOffline += monthOffline;
+
+        const block = document.createElement("div");
+        block.className = "month-row";
+        block.innerHTML = `
+        <div class="month-header">
+            <span>📅 ${monthName(month)} ${year}</span>
+            <span class="month-total">Online: ${money(monthOnline)} | Offline: ${money(monthOffline)} | Total: ${money(monthOnline + monthOffline)}</span>
+        </div>`;
+
+        Object.keys(dates).sort().forEach(date => {
+            const dayEntries = dates[date];
+            let dayOnline = 0;
+            let dayOffline = 0;
+
+            dayEntries.forEach(entry => {
+                dayOnline += getEntryOnline(entry);
+                dayOffline += getEntryOffline(entry);
+            });
+
+            block.innerHTML += `
+            <div class="date-header">
+                <span>📌 ${formatDate(date)}</span>
+                <span class="date-total">Daily Total: ${money(dayOnline + dayOffline)}</span>
+            </div>
+            <div class="table-wrap">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th><th>Work / Product</th><th>Payment</th><th>Online</th><th>Offline</th><th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${dayEntries.map(entry => {
+                            const online = getEntryOnline(entry);
+                            const offline = getEntryOffline(entry);
+                            return `
+                            <tr>
+                                <td>${escapeHtml(entry.customer)}</td>
+                                <td>${escapeHtml(entry.work)}</td>
+                                <td>${escapeHtml(entry.mode)}</td>
+                                <td>${money(online)}</td>
+                                <td>${money(offline)}</td>
+                                <td><strong>${money(online + offline)}</strong></td>
+                            </tr>`;
+                        }).join("")}
+                    </tbody>
+                </table>
+            </div>
+            <div class="month-summary-line">
+                ${formatDate(date)} — Online: ${money(dayOnline)} | Offline: ${money(dayOffline)} | Total: ${money(dayOnline + dayOffline)}
+            </div>`;
+        });
+
+        container.appendChild(block);
+    });
+
+    container.innerHTML = `
+        <div class="year-title">
+            <span>🏆 OVERALL ${year}</span>
+            <span class="year-total">Online: ${money(yearlyOnline)} | Offline: ${money(yearlyOffline)} | TOTAL: ${money(yearlyOnline + yearlyOffline)}</span>
+        </div>
+    ` + container.innerHTML;
+}
+
+function searchCustomerHistory(){
+    const search = document.getElementById("customerSearch").value.trim().toLowerCase();
+    const container = document.getElementById("customerHistoryContainer");
+
+    if(!search){
+        container.innerHTML = `<div class="no-data">Enter a customer name to see their complete history.</div>`;
+        return;
+    }
+
+    const customerEntries = entries
+        .filter(entry => String(entry.customer).toLowerCase().includes(search))
+        .sort((a,b) => a.date.localeCompare(b.date));
+
+    if(!customerEntries.length){
+        container.innerHTML = `<div class="no-data">❌ No customer history found for "<strong>${escapeHtml(search)}</strong>".</div>`;
+        return;
+    }
+
+    let onlineTotal = 0;
+    let offlineTotal = 0;
+    customerEntries.forEach(entry => {
+        onlineTotal += getEntryOnline(entry);
+        offlineTotal += getEntryOffline(entry);
+    });
+
+    const overallTotal = onlineTotal + offlineTotal;
+    const customerNames = [...new Set(customerEntries.map(e => e.customer))];
+
+    container.innerHTML = `
+        <div class="customer-result-header">
+            <h3>👤 Customer Search: "${escapeHtml(search)}"</h3>
+            <p>Found <strong>${customerEntries.length}</strong> transaction(s) from <strong>${customerNames.length}</strong> matching customer name(s).</p>
+            <div class="customer-total-grid">
+                <div class="customer-total-box">Transactions<strong>${customerEntries.length}</strong></div>
+                <div class="customer-total-box">Online<strong>${money(onlineTotal)}</strong></div>
+                <div class="customer-total-box">Offline<strong>${money(offlineTotal)}</strong></div>
+                <div class="customer-total-box">Overall Earned<strong>${money(overallTotal)}</strong></div>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Customer</th><th>Day</th><th>Month</th><th>Year</th><th>Work / Product</th><th>Payment</th><th>Online</th><th>Offline</th><th>Total</th></tr>
+                </thead>
+                <tbody>
+                    ${customerEntries.map(entry => {
+                        const d = new Date(entry.date + "T00:00:00");
+                        const online = getEntryOnline(entry);
+                        const offline = getEntryOffline(entry);
+                        const total = online + offline;
+                        return `
+                        <tr>
+                            <td><strong>${escapeHtml(entry.customer)}</strong></td>
+                            <td>${d.getDate()}</td>
+                            <td>${d.toLocaleString("en-IN", { month:"long" })}</td>
+                            <td>${d.getFullYear()}</td>
+                            <td>${escapeHtml(entry.work)}</td>
+                            <td>${escapeHtml(entry.mode)}</td>
+                            <td>${money(online)}</td>
+                            <td>${money(offline)}</td>
+                            <td><strong>${money(total)}</strong></td>
+                        </tr>`;
+                    }).join("")}
+                </tbody>
+            </table>
+        </div>`;
+}
+
+function clearCustomerSearch(){
+    document.getElementById("customerSearch").value = "";
+    document.getElementById("customerHistoryContainer").innerHTML = `<div class="no-data">Enter a customer name to see their complete history.</div>`;
+}
+
+function toggleSettingsMenu(){
+    document.getElementById("settingsMenu").classList.toggle("show");
+}
+
+function closeSettingsMenu(){
+    document.getElementById("settingsMenu").classList.remove("show");
+}
+
+function openHeadingModal(){
+    closeSettingsMenu();
+    document.getElementById("headingMainTitle").value = localStorage.getItem("omSaiShopName") || "";
+    document.getElementById("headingSubtitle").value = localStorage.getItem("omSaiOccupation") || "";
+    document.getElementById("headingModal").classList.add("show");
+}
+
+function saveHeadingSettings(){
+    const mainTitle = document.getElementById("headingMainTitle").value.trim();
+    const subtitle = document.getElementById("headingSubtitle").value.trim();
+    localStorage.setItem("omSaiShopName", mainTitle);
+    localStorage.setItem("omSaiOccupation", subtitle);
+    loadShopName();
+    loadOccupation();
+    closeAllModals();
+}
+
+function openProfileModal(){
+    closeSettingsMenu();
+    const saved = localStorage.getItem("omSaiEmployeePhoto");
+    const preview = document.getElementById("profilePreview");
+    document.getElementById("profileImageInput").value = "";
+
+    if(saved){
+        preview.src = saved;
+        preview.style.display = "block";
+    }else{
+        preview.removeAttribute("src");
+        preview.style.display = "none";
+    }
+
+    const savedSize = Number(localStorage.getItem("omSaiProfileSize"));
+    const size = Number.isFinite(savedSize) ? savedSize : 90;
+    document.getElementById("profileSize").value = size;
+    document.getElementById("profileSizeValue").textContent = size;
+
+    const savedX = Number(localStorage.getItem("omSaiProfilePositionX"));
+    const savedY = Number(localStorage.getItem("omSaiProfilePositionY"));
+    const savedZoom = Number(localStorage.getItem("omSaiProfileZoom"));
+
+    document.getElementById("profilePosX").value = Number.isFinite(savedX) ? savedX : 50;
+    document.getElementById("profilePosY").value = Number.isFinite(savedY) ? savedY : 50;
+    document.getElementById("profileZoom").value = Number.isFinite(savedZoom) ? savedZoom : 100;
+
+    previewProfileSize();
+    updateProfilePreview();
+    document.getElementById("profileModal").classList.add("show");
+}
+
+function previewProfileImage(){
+    const file = document.getElementById("profileImageInput").files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        const preview = document.getElementById("profilePreview");
+        preview.src = e.target.result;
+        preview.style.display = "block";
+        updateProfilePreview();
+    };
+    reader.readAsDataURL(file);
+}
+
+function previewProfileSize(){
+    const size = Number(document.getElementById("profileSize").value);
+    document.getElementById("profileSizeValue").textContent = size;
+    const preview = document.getElementById("profilePreview");
+    if(preview) previewProfileTransform();
+}
+
+function updateProfilePreview(){
+    const preview = document.getElementById("profilePreview");
+    if(!preview) return;
+    const x = Number(document.getElementById("profilePosX").value);
+    const y = Number(document.getElementById("profilePosY").value);
+    const zoom = Number(document.getElementById("profileZoom").value);
+
+    preview.style.objectPosition = `${x}% ${y}%`;
+    preview.style.transform = `scale(${zoom / 100})`;
+
+    document.getElementById("profilePosXValue").textContent = x;
+    document.getElementById("profilePosYValue").textContent = y;
+    document.getElementById("profileZoomValue").textContent = zoom;
+}
+
+function previewProfileTransform(){
+    const preview = document.getElementById("profilePreview");
+    if(!preview) return;
+    const x = Number(document.getElementById("profilePosX").value);
+    const y = Number(document.getElementById("profilePosY").value);
+    const zoom = Number(document.getElementById("profileZoom").value);
+
+    preview.style.objectPosition = `${x}% ${y}%`;
+    preview.style.transform = `scale(${zoom / 100})`;
+}
+
+function saveProfileImage(){
+    const file = document.getElementById("profileImageInput").files[0];
+    const size = Number(document.getElementById("profileSize").value);
+    const x = Number(document.getElementById("profilePosX").value);
+    const y = Number(document.getElementById("profilePosY").value);
+    const zoom = Number(document.getElementById("profileZoom").value);
+
+    localStorage.setItem("omSaiProfileSize", size);
+    localStorage.setItem("omSaiProfilePositionX", x);
+    localStorage.setItem("omSaiProfilePositionY", y);
+    localStorage.setItem("omSaiProfileZoom", zoom);
+
+    document.documentElement.style.setProperty("--profile-size", size + "px");
+
+    if(!file){
+        const existing = localStorage.getItem("omSaiEmployeePhoto");
+        if(existing){
+            loadProfile();
+            closeAllModals();
+            alert("Profile settings saved successfully.");
+            return;
+        }
+        alert("Please select a profile photo.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+        localStorage.setItem("omSaiEmployeePhoto", e.target.result);
+        loadProfile();
+        closeAllModals();
+        alert("Profile photo saved successfully.");
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeProfilePhotoFromMenu(){
+    localStorage.removeItem("omSaiEmployeePhoto");
+    loadProfile();
+    closeSettingsMenu();
+    alert("Profile photo removed.");
+}
+
+function loadProfile(){
+    const saved = localStorage.getItem("omSaiEmployeePhoto");
+    const img = document.getElementById("profilePhoto");
+    const savedSize = Number(localStorage.getItem("omSaiProfileSize"));
+    const size = Number.isFinite(savedSize) ? savedSize : 90;
+
+    document.documentElement.style.setProperty("--profile-size", size + "px");
+
+    const savedX = Number(localStorage.getItem("omSaiProfilePositionX"));
+    const savedY = Number(localStorage.getItem("omSaiProfilePositionY"));
+    const savedZoom = Number(localStorage.getItem("omSaiProfileZoom"));
+
+    const x = Number.isFinite(savedX) ? savedX : 50;
+    const y = Number.isFinite(savedY) ? savedY : 50;
+    const zoom = Number.isFinite(savedZoom) ? savedZoom : 100;
+
+    if(saved){
+        img.src = saved;
+    }else{
+        img.src = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+                <rect width="100%" height="100%" fill="#e5e7eb"/>
+                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="60">👤</text>
+            </svg>
+        `);
+    }
+
+    img.style.objectPosition = `${x}% ${y}%`;
+    img.style.transform = `scale(${zoom / 100})`;
+    document.getElementById("profileEmployeeName").textContent = localStorage.getItem("omSaiEmployeeName") || "Employee Name";
+}
+
+function openNameModal(){
+    closeSettingsMenu();
+    document.getElementById("newEmployeeName").value = localStorage.getItem("omSaiEmployeeName") || "";
+    document.getElementById("nameModal").classList.add("show");
+}
+
+function saveNewEmployeeName(){
+    let name = document.getElementById("newEmployeeName").value.trim();
+    if(!name) name = "Employee Name";
+    localStorage.setItem("omSaiEmployeeName", name);
+    loadProfile();
+    closeAllModals();
+}
+
+function loadShopName(){
+    const shop = localStorage.getItem("omSaiShopName") || "";
+    document.getElementById("shopNameDisplay").textContent = shop;
+    document.getElementById("profileShopName").textContent = shop;
+    document.getElementById("footerShopName").textContent = shop ? shop + " - " : "";
+    document.title = (shop ? shop + " - " : "") + "Daily Diary";
+}
+
+function openShopModal(){
+    closeSettingsMenu();
+    document.getElementById("newShopName").value = localStorage.getItem("omSaiShopName") || "";
+    document.getElementById("shopModal").classList.add("show");
+}
+
+function saveNewShopName(){
+    let name = document.getElementById("newShopName").value.trim();
+    localStorage.setItem("omSaiShopName", name);
+    loadShopName();
+    closeAllModals();
+}
+
+function loadOccupation(){
+    const occupation = localStorage.getItem("omSaiOccupation") || "";
+    document.getElementById("occupationDisplay").textContent = occupation;
+    document.getElementById("profileOccupation").textContent = occupation;
+}
+
+function openOccupationModal(){
+    closeSettingsMenu();
+    document.getElementById("newOccupation").value = localStorage.getItem("omSaiOccupation") || "";
+    document.getElementById("occupationModal").classList.add("show");
+}
+
+function saveNewOccupation(){
+    let occupation = document.getElementById("newOccupation").value.trim();
+    localStorage.setItem("omSaiOccupation", occupation);
+    loadOccupation();
+    closeAllModals();
+}
+
+function openBackgroundModal(){
+    closeSettingsMenu();
+    const saved = localStorage.getItem("omSaiBackgroundImage");
+    const preview = document.getElementById("backgroundPreview");
+    document.getElementById("backgroundImageInput").value = "";
+
+    if(saved){
+        preview.style.backgroundImage = `url("${saved}")`;
+        preview.style.display = "block";
+    }else{
+        preview.style.backgroundImage = "";
+        preview.style.display = "none";
+    }
+
+    const savedDensity = Number(localStorage.getItem("omSaiImageDensity"));
+    const density = Number.isFinite(savedDensity) ? savedDensity : 0;
+    document.getElementById("backgroundDensity").value = density;
+    document.getElementById("densityValue").textContent = density;
+
+    const savedX = Number(localStorage.getItem("omSaiBackgroundPosX"));
+    const savedY = Number(localStorage.getItem("omSaiBackgroundPosY"));
+
+    document.getElementById("backgroundPosX").value = Number.isFinite(savedX) ? savedX : 50;
+    document.getElementById("backgroundPosY").value = Number.isFinite(savedY) ? savedY : 50;
+
+    updateBackgroundPreview();
+    document.getElementById("backgroundModal").classList.add("show");
+}
+
+function previewBackgroundImage(){
+    const file = document.getElementById("backgroundImageInput").files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        const preview = document.getElementById("backgroundPreview");
+        preview.style.backgroundImage = `url("${e.target.result}")`;
+        preview.style.display = "block";
+        updateBackgroundPreview();
+    };
+    reader.readAsDataURL(file);
+}
+
+function updateBackgroundPreview(){
+    const preview = document.getElementById("backgroundPreview");
+    if(!preview) return;
+    const x = Number(document.getElementById("backgroundPosX").value);
+    const y = Number(document.getElementById("backgroundPosY").value);
+    preview.style.backgroundPosition = `${x}% ${y}%`;
+    document.getElementById("backgroundPosXValue").textContent = x;
+    document.getElementById("backgroundPosYValue").textContent = y;
+}
+
+function applyBackgroundDensity(density){
+    const value = Math.min(90, Math.max(0, Number(density)));
+    const overlay = value / 100;
+    document.body.style.setProperty("--background-overlay", `rgba(0,0,0,${overlay})`);
+
+    const densityValue = document.getElementById("densityValue");
+    if(densityValue) densityValue.textContent = value;
+
+    const menuDensityValue = document.getElementById("menuDensityValue");
+    if(menuDensityValue) menuDensityValue.textContent = value + "%";
+
+    const menuSlider = document.getElementById("menuBackgroundDensity");
+    if(menuSlider) menuSlider.value = value;
+
+    const modalSlider = document.getElementById("backgroundDensity");
+    if(modalSlider) modalSlider.value = value;
+
+    localStorage.setItem("omSaiImageDensity", value);
+}
+
+function previewBackgroundDensity(){
+    const density = Number(document.getElementById("backgroundDensity").value);
+    applyBackgroundDensity(density);
+}
+
+function changeBackgroundDensityFromMenu(value){
+    applyBackgroundDensity(Number(value));
+}
+
+function saveBackgroundImage(){
+    const file = document.getElementById("backgroundImageInput").files[0];
+    const existing = localStorage.getItem("omSaiBackgroundImage");
+
+    if(!file && !existing){
+        alert("Please select a background image.");
+        return;
+    }
+
+    const density = Number(document.getElementById("backgroundDensity").value);
+    const x = Number(document.getElementById("backgroundPosX").value);
+    const y = Number(document.getElementById("backgroundPosY").value);
+
+    localStorage.setItem("omSaiImageDensity", density);
+    localStorage.setItem("omSaiBackgroundPosX", x);
+    localStorage.setItem("omSaiBackgroundPosY", y);
+
+    if(!file){
+        if(existing){
+            applyBackgroundImage(existing);
+            applyBackgroundDensity(density);
+        }
+        closeAllModals();
+        alert("Background settings saved successfully.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+        localStorage.setItem("omSaiBackgroundImage", e.target.result);
+        applyBackgroundImage(e.target.result);
+        applyBackgroundDensity(density);
+        closeAllModals();
+        alert("Background image saved successfully.");
+    };
+    reader.readAsDataURL(file);
+}
+
+function applyBackgroundImage(image){
+    const savedX = Number(localStorage.getItem("omSaiBackgroundPosX"));
+    const savedY = Number(localStorage.getItem("omSaiBackgroundPosY"));
+    const x = Number.isFinite(savedX) ? savedX : 50;
+    const y = Number.isFinite(savedY) ? savedY : 50;
+
+    document.body.style.backgroundImage = `url("${image}")`;
+    document.body.style.backgroundPosition = `${x}% ${y}%`;
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundAttachment = "fixed";
+    document.body.style.backgroundRepeat = "no-repeat";
+    document.body.classList.add("has-custom-background");
+
+    const savedDensity = Number(localStorage.getItem("omSaiImageDensity"));
+    applyBackgroundDensity(Number.isFinite(savedDensity) ? savedDensity : 0);
+}
+
+function loadBackgroundImage(){
+    const saved = localStorage.getItem("omSaiBackgroundImage");
+    const savedDensity = Number(localStorage.getItem("omSaiImageDensity"));
+    const savedX = Number(localStorage.getItem("omSaiBackgroundPosX"));
+    const savedY = Number(localStorage.getItem("omSaiBackgroundPosY"));
+
+    if(saved){
+        document.body.style.backgroundImage = `url("${saved}")`;
+        document.body.style.backgroundPosition = `${Number.isFinite(savedX)?savedX:50}% ${Number.isFinite(savedY)?savedY:50}%`;
+        document.body.style.backgroundSize = "cover";
+        document.body.style.backgroundAttachment = "fixed";
+        document.body.style.backgroundRepeat = "no-repeat";
+        document.body.classList.add("has-custom-background");
+        applyBackgroundDensity(Number.isFinite(savedDensity) ? savedDensity : 0);
+    }else{
+        document.body.style.backgroundImage = "";
+        document.body.style.backgroundPosition = "";
+        document.body.classList.remove("has-custom-background");
+        applyBackgroundDensity(0);
+    }
+}
+
+function removeBackgroundImage(){
+    localStorage.removeItem("omSaiBackgroundImage");
+    localStorage.removeItem("omSaiBackgroundPosX");
+    localStorage.removeItem("omSaiBackgroundPosY");
+    document.body.style.backgroundImage = "";
+    document.body.style.backgroundPosition = "";
+    document.body.classList.remove("has-custom-background");
+    closeSettingsMenu();
+    alert("Background image removed.");
+}
+
+function setTheme(theme){
+    document.body.classList.remove("dark");
+    if(theme === "dark") document.body.classList.add("dark");
+    localStorage.setItem("omSaiTheme", theme === "dark" ? "dark" : "light");
+
+    const savedDensity = Number(localStorage.getItem("omSaiImageDensity"));
+    if(document.body.classList.contains("has-custom-background")){
+        applyBackgroundDensity(Number.isFinite(savedDensity) ? savedDensity : 0);
+    }
+}
+
+function loadTheme(){
+    const saved = localStorage.getItem("omSaiTheme") || "light";
+    setTheme(saved === "dark" ? "dark" : "light");
+}
+
+function closeAllModals(){
+    document.querySelectorAll(".settings-modal").forEach(modal => modal.classList.remove("show"));
+}
+
+function closeModalOnBackground(event, modal){
+    if(event.target === modal) closeAllModals();
+}
+
+function printDailyDiary(){
+    window.print();
+}
+
+function clearAllIncomeData(){
+    closeSettingsMenu();
+    if(!entries.length){
+        alert("There is no active income data to clear.");
+        return;
+    }
+
+    const confirmation = prompt("⚠️ WARNING\n\nThis will move ALL active income records to Deleted History.\n\nType DELETE to confirm:");
+    if(confirmation !== "DELETE"){
+        alert("Cancelled. No data was deleted.");
+        return;
+    }
+
+    const deletedTime = new Date().toISOString();
+    entries.forEach(entry => {
+        deletedEntries.unshift({ ...entry, deletedAt:deletedTime });
+    });
+
+    entries = [];
+    saveEntries();
+    saveDeletedEntries();
+    renderAll();
+    clearCustomerSearch();
+    alert("All income data has been moved to Deleted History.");
+}
+
+/* =====================================================
+   KEYBOARD SHORTCUTS
+===================================================== */
+document.addEventListener("keydown", function(event){
+    const active = document.activeElement;
+
+    // Ignore shortcuts when login overlay is visible
+    if(document.getElementById("authOverlay").style.display !== "none") return;
+
+    if(event.key === "Escape"){
+        event.preventDefault();
+        if(editingId !== null) cancelEdit();
+        closeAllModals();
+        closeSettingsMenu();
+        return;
+    }
+
+    if(event.key === "Enter"){
+        const entryFields = ["customerName", "workDone", "paymentAmount", "onlineAmount", "offlineAmount"];
+        if(active && entryFields.includes(active.id)){
+            event.preventDefault();
+            saveEntry();
+            return;
+        }
+    }
+
+    if(event.key === "ArrowLeft" || event.key === "ArrowRight"){
+        if(document.querySelector(".settings-modal.show") || document.getElementById("settingsMenu").classList.contains("show")){
+            return;
+        }
+
+        const focusableInputs = Array.from(
+            document.querySelectorAll("input:not([type='hidden']):not([readonly]):not([disabled]), select:not([disabled])")
+        ).filter(el => !el.closest(".hidden") && !el.closest(".settings-modal") && el.offsetParent !== null && !el.closest("#authOverlay"));
+
+        if(!focusableInputs.length) return;
+        const currentIndex = focusableInputs.indexOf(active);
+
+        if(event.key === "ArrowRight"){
+            event.preventDefault();
+            if(currentIndex === -1 || currentIndex === focusableInputs.length - 1){
+                focusableInputs[0].focus();
+            } else {
+                focusableInputs[currentIndex + 1].focus();
+            }
+            return;
+        }
+
+        if(event.key === "ArrowLeft"){
+            event.preventDefault();
+            if(currentIndex <= 0){
+                focusableInputs[focusableInputs.length - 1].focus();
+            } else {
+                focusableInputs[currentIndex - 1].focus();
+            }
+            return;
+        }
+    }
+}, true);
+
+document.addEventListener("click", function(event){
+    const menu = document.getElementById("settingsMenu");
+    const button = document.querySelector(".menu-button");
+    if(menu && menu.classList.contains("show") && !menu.contains(event.target) && !button.contains(event.target)){
+        closeSettingsMenu();
+    }
+});
+
+function renderAll(){
+    renderDailyEntries();
+    populateMonthSelectors();
+    renderDailyHistory();
+    renderMonthlySummary();
+    renderFinancialTotals();
+    populateYearSelector();
+    renderCompleteHistory();
+
+    const search = document.getElementById("customerSearch").value.trim();
+    if(search) searchCustomerHistory();
+}
+
+function initialize(){
+    document.getElementById("selectedDate").value = getTodayString();
+    document.getElementById("footerYear").textContent = new Date().getFullYear();
+
+    loadShopName();
+    loadOccupation();
+    loadProfile();
+    loadTheme();
+    loadBackgroundImage();
+    updatePaymentFields();
+    renderAll();
+}
+
+// Initial Boot: Check password state
+checkAuthStatus();
+</script>
+
+</body>
+</html>
